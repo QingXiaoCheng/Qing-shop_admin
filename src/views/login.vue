@@ -5,6 +5,7 @@
         ref="formData"
         :model="formData"
         label-width="80px"
+        :rules="loginrules"
         label-position="top"
         class="loginForm"
       >
@@ -15,26 +16,64 @@
           <el-input v-model="formData.password"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">登录</el-button>
-          <el-button>重置</el-button>
+          <el-button type="primary" @click="onSubmit('formData')">登录</el-button>
+          <el-button @click="onReset('formData')">重置</el-button>
         </el-form-item>
       </el-form>
     </el-col>
   </el-row>
 </template>
 <script>
-// import axios from "axios";
+import axios from "axios";
 export default {
   data() {
     return {
       formData: {
         username: "",
         password: ""
+      },
+      loginrules: {
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          { min: 4, max: 8, message: "用户名在4-8位", trigger: "change" }
+        ],
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { min: 6, max: 12, message: "密码在6-12位", trigger: "change" }
+        ]
       }
     };
   },
 
-  methods: {}
+  methods: {
+    onSubmit(value) {
+      this.$refs[value].validate(valid => {
+        if (valid) {
+          axios({
+            url: "http://localhost:8888/api/private/v1/login",
+            method: "post",
+            data: this.formData
+          }).then(({ data: { data, meta } }) => {
+            if (meta.status === 200) {
+              localStorage.setItem("token", data.token);
+              this.$router.push("/home");
+            } else {
+              //   console.log("用户名或密码错误");
+              this.messagePrompt();
+            }
+          });
+        } else {
+          return false;
+        }
+      });
+    },
+    onReset(value) {
+      this.$refs[value].resetFields();
+    },
+    messagePrompt() {
+      this.$message.error("用户名或密码错误");
+    }
+  }
 };
 </script>
 

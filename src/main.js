@@ -8,12 +8,14 @@ import './assets/css/commen.css'
 Vue.use(ElementUI)
 
 router.beforeEach((to, from, next) => {
-  if (from.path === '/login') {
+  if (to.path === '/login') {
     next()
     return
   }
   if (localStorage.getItem('token')) {
     next()
+  } else {
+    router.push('/login')
   }
 })
 Vue.config.productionTip = false
