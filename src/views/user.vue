@@ -15,8 +15,7 @@
       <el-button type="success" plain size="mini" icon="el-icon-check">分配角色</el-button>
     </el-table-column>
   </el-table>
-</template>
-
+</template>                                                                                                                                                                                
 <script>
 import axios from "axios";
 export default {
