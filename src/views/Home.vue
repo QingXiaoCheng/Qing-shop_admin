@@ -11,7 +11,7 @@
         <el-col :span="6">
           <div class="welcome">
             欢迎39期星耀会员
-            <a href="#">退出</a>
+            <a href="#" @click="logout">退出</a>
           </div>
         </el-col>
       </el-row>
@@ -103,7 +103,14 @@
 </template>
 
 <script>
-export default {};
+export default {
+  methods: {
+    logout() {
+      localStorage.removeItem("token");
+      this.$router.push("/login");
+    }
+  }
+};
 </script>
 
 
@@ -135,6 +142,9 @@ export default {};
 
 .el-menu-vertical-demo.el-menu {
   height: 100%;
+}
+.el-main {
+  background-color: #eaeef1;
 }
 </style>
 
