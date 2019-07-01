@@ -78,12 +78,12 @@
     ></el-pagination>
 
     <!-- 添加用户的对话框 -->
-    <el-dialog title="添加用户" :visible.sync="addUserDialogShow" @close="atCloseDialog">
+    <el-dialog title="添加用户" :visible.sync="addUserDialogShow" @close="closeDialogHandler">
       <el-form
         label-width="80px"
         :model="addUserFormData"
-        :rules="addUserFormRules"
         ref="addUserRuleForm"
+        :rules="addUserFormRules"
       >
         <el-form-item label="用户名" prop="username">
           <el-input autocomplete="off" v-model="addUserFormData.username"></el-input>
@@ -110,7 +110,7 @@
     </el-dialog>
 
     <!-- 编辑用户的对话框 -->
-    <el-dialog title="编辑用户" :visible.sync="editUserDialogShow" @close="atCloseDialog">
+    <el-dialog title="编辑用户" :visible.sync="editUserDialogShow" @close="closeDialogHandler">
       <el-form
         label-width="80px"
         :model="editUserFormData"
@@ -246,11 +246,15 @@ export default {
     clickToShowDialog() {
       this.addUserDialogShow = true;
     },
+    closeDialogHandler() {
+      // 这里点击确定添加按钮时候，再次点击不会重置----------有问题--后续解决
+      this.$refs.addUserRuleForm.resetFields();
+    },
     async sureToAddUser() {
       try {
         // console.log(this.$refs);
         let valid = await this.$refs.addUserRuleForm.validate();
-        console.log(valid);
+        // console.log(valid);
         if (valid) {
           let {
             data: { data, meta }
@@ -259,17 +263,15 @@ export default {
             method: "post",
             data: this.addUserFormData
           });
-          console.log(data, meta);
+          // console.log(data, meta);
           if (meta.status === 201) {
             this.$message({
               message: meta.msg,
               type: "success"
             });
-            console.log(this.addUserDialogShow);
-            this.addUserDialogShow = false;
-            console.log(this.addUserDialogShow);
 
-            this.addUserFormData = data;
+            this.addUserDialogShow = false;
+
             this.getUserList();
           } else {
             this.$message({
@@ -282,10 +284,7 @@ export default {
         console.log(error);
       }
     },
-    atCloseDialog() {
-      // 这里点击确定添加按钮时候，再次点击不会重置----------有问题后续解决
-      this.$refs.addUserRuleForm.resetFields();
-    },
+
     async changeSwitchState(value) {
       try {
         // console.log(value);
