@@ -8,6 +8,7 @@ export default {
       pageSize: 3,
       addUserDialogShow: false,
       editUserDialogShow: false,
+      showRoleAssignDialog: false,
       addUserFormData: {
         username: '',
         password: '',
@@ -71,6 +72,13 @@ export default {
             trigger: 'change'
           }
         ]
+      },
+      currentId: -1,
+      roleName: '',
+      selectData: [],
+      selectinfo: {
+        username: '',
+        rid: ''
       }
     }
   },
@@ -78,6 +86,46 @@ export default {
     this.getUserList()
   },
   methods: {
+    async slectRoleHandler() {
+      // this.selectinfo是当前行用户数据
+      console.log(this.selectinfo)
+      let res = await this.$http({
+        url: `users/${this.selectinfo.id}/role`,
+        method: 'put',
+        data: {
+          rid: this.selectinfo.rid
+        }
+      })
+      console.log(res)
+      if (res.data.meta.status === 200) {
+        this.$message({
+          message: res.data.meta.msg,
+          type: 'success',
+          duration: 1000
+        })
+        this.showRoleAssignDialog = false
+      }
+    },
+    async isshowRoleAssignDialog(id) {
+      // 点击显示模态框
+      this.showRoleAssignDialog = true
+
+      // 当前点击行
+      this.currentId = id
+
+      // 根据id 获取用户数据
+      let userInfo = await this.$http({
+        url: `users/${this.currentId}`
+      })
+      console.log(userInfo)
+      this.selectinfo = userInfo.data.data
+
+      let res = await this.$http({
+        url: 'roles'
+      })
+      // console.log(res)
+      this.selectData = res.data.data
+    },
     async getUserList() {
       try {
         let {
@@ -109,7 +157,7 @@ export default {
       this.addUserDialogShow = true
     },
     closeDialogHandler() {
-      // 这里点击确定添加按钮时候，再次点击不会重置----------有问题--后续解决
+      // 这里点击确定添加按钮时候
       this.$refs.addUserRuleForm.resetFields()
     },
     async sureToAddUser() {
