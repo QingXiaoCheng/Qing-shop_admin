@@ -1,0 +1,13 @@
+.level1 {
+  border-bottom: 1px dashed #ccc;
+  padding: 10px 0;
+}
+.level1:last-child {
+  border-bottom: none;
+}
+.level2 {
+  margin-bottom: 10px;
+}
+.level3 {
+  margin: 0 8px 8px 0;
+}
