@@ -8,6 +8,7 @@ import './assets/css/commen.css'
 Vue.use(ElementUI)
 import axios from 'axios'
 Vue.prototype.$http = axios
+
 // 首先解决baseURL的问题
 axios.defaults.baseURL = 'http://localhost:8888/api/private/v1/'
 
