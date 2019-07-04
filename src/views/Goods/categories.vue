@@ -9,7 +9,7 @@
     <el-button type="success" plain style="margin:8px 0;" @click="addCates">添加分类</el-button>
 
     <!-- 要想indentSize生效 必须设置 levelKey="cat_level" 属性 -->
-    <el-table :data="cateList">
+    <el-table :data="cateList" v-loading="loading">
       <el-table-tree-column
         file-icon="el-icon-notebook-2"
         folder-icon="el-icon-folder"
@@ -87,7 +87,8 @@ export default {
         value: "cat_id",
         label: "cat_name",
         checkStrictly: true
-      }
+      },
+      loading: true
     };
   },
   methods: {
@@ -105,8 +106,10 @@ export default {
         }
       });
       // console.log(res);
+
       this.total = res.data.data.total;
       this.cateList = res.data.data.result;
+      this.loading = false;
     },
     async addCates() {
       this.isAddCateDialogShow = true;
